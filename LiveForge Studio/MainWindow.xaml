@@ -1,0 +1,228 @@
+<Window x:Class="LiveForge_Studio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding ProductName}" Width="1440" Height="920" MinWidth="1100" MinHeight="720"
+        Background="{StaticResource CanvasBrush}" Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI" WindowStartupLocation="CenterScreen">
+    <Window.InputBindings>
+        <KeyBinding Key="PageUp" Modifiers="Control" Command="{Binding PreviousSlideCommand}" />
+        <KeyBinding Key="PageDown" Modifiers="Control" Command="{Binding NextSlideCommand}" />
+        <KeyBinding Key="N" Modifiers="Control+Shift" Command="{Binding AddSceneCommand}" />
+    </Window.InputBindings>
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="208" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="52" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource AccentBrush}" Margin="0,0,11,0">
+                    <TextBlock Text="LF" Foreground="#101216" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ProductName}" FontSize="14" FontWeight="Bold" CharacterSpacing="70" />
+                    <TextBlock Text="STUDIO  ·  CONTROL ROOM" FontSize="9" Foreground="{StaticResource MutedBrush}" CharacterSpacing="110" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Background="{StaticResource RaisedBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="5" Padding="11,7" Margin="0,0,12,0">
+                    <TextBlock Text="{Binding ProfileName}" FontSize="12" />
+                </Border>
+                <Button Style="{StaticResource SmallActionButton}" Content="Settings" Command="{Binding OpenSettingsCommand}" ToolTip="Open application settings" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="216" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" MinWidth="450" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="248" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource PanelCard}" Padding="12">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                        <DockPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="SCENES" VerticalAlignment="Center" />
+                            <Button DockPanel.Dock="Right" Style="{StaticResource SmallActionButton}" Content="−" Padding="9,4" Margin="6,0,0,0" Command="{Binding DeleteSceneCommand}" ToolTip="Remove the selected scene" />
+                            <Button DockPanel.Dock="Right" Style="{StaticResource SmallActionButton}" Content="+ Add" Padding="8,4" Command="{Binding AddSceneCommand}" />
+                        </DockPanel>
+                        <TextBlock Text="{Binding CollectionName}" FontSize="11" Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0" />
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding Scenes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.SelectSceneCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" Padding="0" Margin="0,0,0,5"
+                                        ToolTip="Select this scene for local preview">
+                                    <Border Padding="10,10" CornerRadius="5" Background="{Binding SelectionBackground}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Number}" Foreground="{StaticResource MutedBrush}" FontSize="11" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding SourceSummary}" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="0,3,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock DockPanel.Dock="Bottom" Text="Scene switching changes the local workspace selection only. No live output is connected." TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="1,10,1,0" />
+                </DockPanel>
+            </Border>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions><RowDefinition Height="*" /><RowDefinition Height="12" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Border Grid.Row="0" Style="{StaticResource PanelCard}" Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                        <DockPanel Margin="0,0,0,9">
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="PREVIEW  ·  WORKSPACE" VerticalAlignment="Center" />
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding CanvasFormat}" Foreground="{StaticResource MutedBrush}" FontSize="10" />
+                        </DockPanel>
+                        <Border Grid.Row="1" Background="#0A0B0D" CornerRadius="4" ClipToBounds="True">
+                            <Grid>
+                                <Border Width="210" Height="42" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="#303640" BorderThickness="1" CornerRadius="5" Background="#121419" Padding="12,8">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Ellipse Width="7" Height="7" Fill="{StaticResource MutedBrush}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="NO VIDEO SOURCE" FontSize="11" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" CharacterSpacing="70" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBox Text="{Binding SelectedScene.Name, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="#F3F5F7" Background="#99101216" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8" Padding="4" ToolTip="Rename the selected scene" />
+                                <TextBlock Text="LOCAL SCENE SELECTION  ·  NOT A VIDEO PREVIEW" FontSize="9" Foreground="#69717D" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="12" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="2" Style="{StaticResource PanelCard}" Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                        <DockPanel Margin="0,0,0,9">
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="PROGRAM OUTPUT" VerticalAlignment="Center" />
+                            <TextBlock DockPanel.Dock="Right" Text="NOT CONNECTED" Foreground="{StaticResource DangerBrush}" FontSize="9" FontWeight="Bold" CharacterSpacing="80" />
+                        </DockPanel>
+                        <Border Grid.Row="1" Background="#0A0B0D" CornerRadius="4">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="NO PROGRAM OUTPUT" FontSize="11" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" HorizontalAlignment="Center" CharacterSpacing="70" />
+                                <TextBlock Text="A rendering and output pipeline has not been configured." FontSize="10" Foreground="#69717D" Margin="0,7,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Border Grid.Column="4" Style="{StaticResource PanelCard}" Padding="12">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                        <DockPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="SOURCES" VerticalAlignment="Center" />
+                            <Button DockPanel.Dock="Right" Style="{StaticResource SmallActionButton}" Content="+ Add" Padding="8,4" Command="{Binding AddSourceCommand}" IsEnabled="False" ToolTip="Capture and media sources are not implemented yet" />
+                        </DockPanel>
+                        <TextBlock Text="{Binding SelectedScene.Name}" FontSize="11" Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0" />
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding SelectedScene.Sources}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource RaisedBrush}" CornerRadius="5" Padding="9" Margin="0,0,0,6">
+                                    <DockPanel>
+                                        <Ellipse Width="7" Height="7" Fill="{StaticResource MutedBrush}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Name}" FontSize="11" VerticalAlignment="Center" />
+                                        <TextBlock DockPanel.Dock="Right" Text="{Binding Type}" FontSize="9" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock DockPanel.Dock="Bottom" Text="No input sources are configured. Source capture is not available in this build." TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="1,10,1,0" />
+                </DockPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="2*" /><ColumnDefinition Width="12" /><ColumnDefinition Width="3*" /></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource PanelCard}" Padding="12">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                        <DockPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="AUDIO MIXER" VerticalAlignment="Center" />
+                            <TextBlock DockPanel.Dock="Right" Text="NO INPUTS" Foreground="{StaticResource MutedBrush}" FontSize="9" CharacterSpacing="70" />
+                        </DockPanel>
+                    </StackPanel>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="No audio devices are being captured." FontSize="11" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Meters and mixing controls appear when an audio engine is available." FontSize="10" Foreground="#69717D" Margin="0,6,0,0" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource PanelCard}" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <DockPanel Margin="0,0,0,8">
+                        <TextBlock Style="{StaticResource SectionLabel}" Text="PRESENTATION QUEUE" VerticalAlignment="Center" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button Style="{StaticResource SmallActionButton}" Content="+ Slide" Padding="8,4" Command="{Binding AddSlideCommand}" Margin="0,0,6,0" />
+                            <Button Style="{StaticResource SmallActionButton}" Content="− Remove" Padding="8,4" Command="{Binding DeleteSlideCommand}" Margin="0,0,6,0" />
+                            <Button Style="{StaticResource SmallActionButton}" Content="‹" Padding="9,4" Command="{Binding PreviousSlideCommand}" Margin="0,0,6,0" ToolTip="Previous slide (Ctrl+Page Up)" />
+                            <Button Style="{StaticResource SmallActionButton}" Content="›" Padding="9,4" Command="{Binding NextSlideCommand}" ToolTip="Next slide (Ctrl+Page Down)" />
+                        </StackPanel>
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="220" /></Grid.ColumnDefinitions>
+                        <ListBox ItemsSource="{Binding Slides}" SelectedItem="{Binding SelectedSlide}" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate></ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0" /><Setter Property="Margin" Value="0,0,7,0" />
+                                    <Setter Property="Background" Value="Transparent" /><Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="2"><ContentPresenter /></Border></ControlTemplate></Setter.Value></Setter>
+                                    <Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#26372F" /></Trigger></Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="120" Height="74" Background="#101216" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="8">
+                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="10" VerticalAlignment="Center" />
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Grid Grid.Column="1" Margin="10,0,0,0">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <TextBlock Text="{Binding PresentationStatus}" FontSize="10" Foreground="{StaticResource MutedBrush}" />
+                            <TextBox Grid.Row="1" Text="{Binding SelectedSlide.Text, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="{StaticResource RaisedBrush}" Foreground="{StaticResource TextBrush}" BorderBrush="{StaticResource BorderBrush}" Padding="7" Margin="0,5,0,5" ToolTip="Edit selected slide text" />
+                            <TextBlock Grid.Row="2" Text="Local slide library only — no display output." FontSize="9" Foreground="#69717D" TextWrapping="Wrap" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="6" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="7" Padding="12,0">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="7" Height="7" Fill="{StaticResource MutedBrush}" Margin="0,0,8,0" />
+                    <TextBlock Text="MEDIA ENGINE UNAVAILABLE" FontSize="9" Foreground="{StaticResource MutedBrush}" CharacterSpacing="60" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="STREAM  ·  NOT RUNNING" FontSize="9" Foreground="{StaticResource MutedBrush}" CharacterSpacing="50" VerticalAlignment="Center" Margin="16,0" />
+                <TextBlock Grid.Column="2" Text="RECORDING  ·  NOT RUNNING" FontSize="9" Foreground="{StaticResource MutedBrush}" CharacterSpacing="50" VerticalAlignment="Center" Margin="16,0" />
+                <TextBlock Grid.Column="3" Text="{Binding SaveStatus}" FontSize="9" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="16,0,2,0" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

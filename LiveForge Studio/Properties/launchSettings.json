@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LiveForge Studio": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
